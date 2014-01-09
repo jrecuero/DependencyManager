@@ -10,20 +10,20 @@ describe("Stat", function() {
     });
 
     it("new stat has counter to zero", function() {
-        expect(stat._counter).toEqual(0);
+        expect(stat.my_counter).toEqual(0);
     });
     it("new stat is disabled", function() {
-        expect(stat._enable).toBe(false);
+        expect(stat.my_enable).toBe(false);
     });
     it("enable stat set enable to true", function() {
         stat.enable();
-        expect(stat._enable).toBe(true);
+        expect(stat.my_enable).toBe(true);
     })
     it("disable stat set enable to false", function() {
         stat.enable();
-        expect(stat._enable).toBe(true);
+        expect(stat.my_enable).toBe(true);
         stat.disable();
-        expect(stat._enable).toBe(false);
+        expect(stat.my_enable).toBe(false);
     });
     it("isEnable return if enable is true", function() {
         expect(stat.isEnable()).toBe(false);
@@ -32,7 +32,7 @@ describe("Stat", function() {
     });
     it("getCounter returns counter value", function() {
         expect(stat.get_counter()).toEqual(0);
-        stat._counter = 10;
+        stat.my_counter = 10;
         expect(stat.get_counter()).toEqual(10);
     });
     it("inc method increase counter value by amount (default is 1)", function() {
@@ -188,6 +188,7 @@ describe("Dependency Manager Instance", function() {
     });
 
     afterEach(function() {
+        instance.cleanID();
         instance = null;
     })
 
@@ -207,6 +208,9 @@ describe("Dependency Manager Instance", function() {
         it("ID is 0", function() {
             expect(instance.ID).toEqual(0);
         });
+        it("COUNTER is 0", function() {
+            expect(instance.COUNTER).toEqual(0);
+        });
     });
 
     describe("Register instance", function() {
@@ -222,13 +226,32 @@ describe("Dependency Manager Instance", function() {
             expect(instance.name).toEqual('tracing');
             expect(instance.state).toEqual(DM_InstanceState.CREATED);
             expect(instance.ID).toEqual(1);
+            expect(instance.COUNTER).toEqual(1);
         })
     });
 
-    describe("Reset ID", function() {
-        it("ID is reseted to 0", function() {
+    describe("Unregister instance", function() {
+
+        beforeEach(function() {
+            reto = instance.register('tracing');
+        });
+
+        it("instance after unregister is all null", function() {
+            expect(instance.unregister()).toBe(true);
+            expect(instance.name).toBe(null);
+            expect(instance.state).toBe(DM_InstanceState.NONE);
+            expect(instance.deps).toBe(null);
+            expect(instance.in_deps).toBe(null);
+            expect(instance.ID).toEqual(1);
+            expect(instance.COUNTER).toEqual(0);
+        });
+    });
+
+    describe("Reset Counters", function() {
+        it("ID and COUNTER are reseted to 0", function() {
             expect(instance.cleanID()).toBe(true);
             expect(instance.ID).toEqual(0);
+            expect(instance.COUNTER).toEqual(0);
         });
     });
 });
@@ -247,6 +270,9 @@ describe("Dependency Manager", function() {
     })
 
     describe("Create New", function() {
+        it("instances are empty", function() {
+            expect(empty_obj(depMgr.instances)).toBe(true);
+        });
         it("dependencies are empty", function() {
             expect(empty_obj(depMgr.deps)).toBe(true);
         });
@@ -265,15 +291,35 @@ describe("Dependency Manager", function() {
             expect(reto).toBe(true);
         });
 
-        it("Dependencies are not more empty", function() {
-            expect(empty_obj(depMgr.deps)).toBe(false);
+        it("Instances are not more empty", function() {
+            expect(empty_obj(depMgr.instances)).toBe(false);
             expect(DM_Instance.prototype.ID).toEqual(1);
+            expect(DM_Instance.prototype.COUNTER).toEqual(1);
         });
 
         it("Register an existant name", function() {
             expect(depMgr.register(inst_name)).toBe(false);
             expect(DM_Instance.prototype.ID).toEqual(1);
+            expect(DM_Instance.prototype.COUNTER).toEqual(1);
         });
+    });
+
+    describe("Unregister Instance", function() {
+
+        var inst_name = "New Instance";
+
+        beforeEach(function() {
+            depMgr.register(inst_name);
+        });
+
+        it("Unregister returns True", function() {
+            expect(depMgr.unregister(inst_name)).toBe(true);
+            expect(DM_Instance.prototype.COUNTER).toEqual(0);
+        });
+        it("Unregister a not registered name returns false", function() {
+            expect(depMgr.unregister("other name")).toBe(false);
+            expect(DM_Instance.prototype.COUNTER).toEqual(1);
+        })
     });
 });
 
