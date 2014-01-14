@@ -9,9 +9,28 @@
  * @constructor
  */
 function DM_Instance() {
+    /**
+     * @property name
+     * @type String
+     */
     this.name    = null;
+
+    /**
+     * @property state
+     * @type DM_InstanceState
+     */
     this.state   = DM_InstanceState.NONE;
+
+    /**
+     * @property deps
+     * @type Object
+     */
     this.deps    = null;
+
+    /**
+     * @property in_deps
+     * @type Object
+     */
     this.in_deps = null;
 }
 
@@ -19,6 +38,7 @@ function DM_Instance() {
  * Initialize DM_Instance class variables.
  * 
  * @method init
+ * @static
  */
 DM_Instance.prototype.init = function () {
     DM_Instance.prototype.ID      = 0;
@@ -76,8 +96,11 @@ DM_Instance.prototype.unregister = function () {
  * @return {boolean} true
  */
 DM_Instance.prototype.add_dep = function (id, deps) {
-    this.deps[id] = deps;
-    return true;
+    if (!this.deps.hasOwnProperty(id)) {
+        this.deps[id] = deps;
+        return true;
+    }
+    return false
 };
 
 /**

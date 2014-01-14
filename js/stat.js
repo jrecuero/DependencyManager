@@ -1,13 +1,30 @@
 /**
+ * Atomic stat class.
+ *
  * @class Stat
  * @constructor
  */
 function Stat() {
+    /**
+     * It stores stat counter value.
+     *
+     * @property counter
+     * @type Int
+     */
     this.counter = 0;
-    this.enabled  = false;
+
+    /**
+     * It stores stat status.
+     *
+     * @property emable
+     * @type Boolean
+     */
+    this.enabled = false;
 }
 
 /**
+ * Enable the stat to be working.
+ *
  * @method enable
  */
 Stat.prototype.enable = function () {
@@ -15,6 +32,8 @@ Stat.prototype.enable = function () {
 };
 
 /**
+ * Disable the stat to be working.
+ *
  * @method disable
  */
 Stat.prototype.disable = function () {
@@ -22,6 +41,8 @@ Stat.prototype.disable = function () {
 };
 
 /**
+ * Check if the stat is enabled or not.
+ *
  * @method isEnable
  * @return {boolean} enabled attribute value.
  */
@@ -30,6 +51,8 @@ Stat.prototype.isEnable = function () {
 };
 
 /**
+ * Increase the stat coutner a given amount.
+ *
  * @method inc
  * @param {int} amount Amount to increase the counter. By default is 1.
  * @return {int} New counter value.
@@ -40,6 +63,8 @@ Stat.prototype.inc = function (amount) {
 };
 
 /**
+ * Decrease the stat counter a given amount.
+ *
  * @method dec
  * @param {int} amount Amount to decrease the coutner. By default is 1.
  * @return {int} New counter value.
@@ -53,6 +78,8 @@ Stat.prototype.dec = function (amount) {
 };
 
 /**
+ * Get the stat counter value.
+ *
  * @method get_counter
  * @return {int} Counter value.
  */

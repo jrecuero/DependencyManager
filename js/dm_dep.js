@@ -3,10 +3,34 @@
  * @constructor
  */
 function DM_Dep() {
-    this.name      = null;
-    this.id        = null;
-    this.prio      = null;
-    this.deps      = {};
+    /**
+     * @property name
+     * @type String
+     */
+    this.name = null;
+
+    /**
+     * @property id
+     * @type String
+     */
+    this.id = null;
+
+    /**
+     * @property prio
+     * @type Int
+     */
+    this.prio = null;
+
+    /**
+     * @property deps
+     * @type Object
+     */
+    this.deps = {};
+
+    /**
+     * @property callbacks
+     * @type Object
+     */
     this.callbacks = {};
 }
 
@@ -38,5 +62,6 @@ DM_Dep.prototype.unregister = function () {
     this.prio      = null;
     this.deps      = {};
     this.callbacks = {};
+    return true;
 };
 

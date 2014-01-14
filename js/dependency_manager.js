@@ -10,7 +10,16 @@ window.onload = function () {
  * @constructor
  */
 function DependencyManager() {
+    /**
+     * @property instances
+     * @type Object
+     */
     this.instances = {};
+
+    /**
+     * @property deps
+     * @type Object
+     */
     this.deps      = {};
 }
 
@@ -19,8 +28,8 @@ function DependencyManager() {
  * 
  * @method register
  * @param {string} name Instance name to be registered.
- * @return {boolean} true if instance was registered. false if instance name was 
- * already registered.
+ * @return {boolean} true if instance was registered. false if instance name
+ * was already registered.
  */
 DependencyManager.prototype.register = function (name) {
     if (this.instances.hasOwnProperty(name)) {

@@ -3,8 +3,22 @@
  * @constructor
  */
 function DM_InstanceDep() {
+    /**
+     * @property name
+     * @type String
+     */
     this.name     = null;
+
+    /**
+     * @property attrs
+     * @type Array
+     */
     this.attrs    = [];
+
+    /**
+     * @property relation
+     * @type DM_Relation
+     */
     this.relation = DM_Relation.NONE;
 }
 
@@ -12,7 +26,7 @@ function DM_InstanceDep() {
  * @method create
  * @param {string} name
  * @param {Array} attrs
- * @relation {DM_Relation} relation
+ * @return {DM_Relation} relation
  */
 DM_InstanceDep.prototype.create = function (name, attrs, relation) {
     this.name     = name;

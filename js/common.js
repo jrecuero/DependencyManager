@@ -15,6 +15,8 @@ function empty_obj(obj) {
 
 
 /**
+ * States an instance can have in dependency manager.
+ *
  * @class DM_InstanceState
  * @static
  */
@@ -30,6 +32,8 @@ var DM_InstanceState = {
 
 
 /**
+ * Relation an instance can have with dependencies.
+ *
  * @class DM_relation
  * @static
  */

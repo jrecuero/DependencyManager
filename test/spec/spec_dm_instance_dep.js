@@ -21,7 +21,7 @@ describe("Dependency Manager Dependecy Instance", function() {
         });
     });
 
-    describe("Create New Instance Dependency", function() {
+    describe("New Instance Dependency", function() {
 
         var reto;
         var name     = "new instance dependency";
