@@ -74,8 +74,21 @@ DependencyManager.prototype.add_dep = function (name, id, prio, deps, callbacks)
         instance = this.instances[name];
         dep = new DM_Dep();
         dep.register(name, id, prio, deps, callbacks);
-        instance.add_dep(id, deps);
-        return true;
+        // For every dependency in the deps list, we have to add one entry for
+        // every one of then in the in_deps array, so when changing state for
+        // that instance we can find in all dependencies where it is being
+        // included.
+        if (instance.add_dep(id, deps)) {
+            for (var i = 0; i < deps.length; i++) {
+                dep_instance = this.instances[deps[i]];
+                if (dep_instance) {
+                    if (!dep_instance.add_in_dep(id)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     } 
     return false;
 };
@@ -89,9 +102,14 @@ DependencyManager.prototype.add_dep = function (name, id, prio, deps, callbacks)
 DependencyManager.prototype.remove_dep = function (name, id) {
     if (this.instances.hasOwnProperty(name)) {
         instance = this.instances[name];
-        deps = instance.remove_dep(id);
-        deps.unregister();
-        return true;
+        if (instance.remove_dep(id) != null) {
+            for (var key in this.instances) {
+                if (this.instances.hasOwnProperty(key)) {
+                    this.instances[key].remove_in_dep(id);
+                }
+            }
+            return true;
+        }
     }
     return false;
 };

@@ -56,17 +56,42 @@ describe("Dependency Manager", function() {
             })
         });
 
-        describe("Add Dependency", function() {
-            it("Add new dependency", function () {
-            });
-            it("Add same dependency fails", function () {
-            });
-        });
+        describe("Handle Dependencies", function () {
 
-        describe("Remove Dependency", function () {
-            it("Remove existing dependency", function () {
+            var id        = "new id";
+            var prio      = 100;
+            var deps      = ['One', 'Two', 'Three'];
+            var callbacks = {one: "one", two: "two", three: "three"};
+
+            beforeEach(function () {
+                for (var i = 0; i < deps.length; i++) {
+                    depMgr.register(deps[i]);
+                }
             });
-            it("Remove none-existing dependency", function () {
+
+            describe("Add Dependency", function() {
+                it("Add new dependency", function () {
+                    expect(depMgr.add_dep(inst_name, id, prio, deps, callbacks)).toBe(true);
+                    expect(depMgr.instances[inst_name].deps.hasOwnProperty(id)).toBe(true);
+                    for (var i = 0; i < deps.length; i++) {
+                        expect(depMgr.instances[deps[i]].in_deps.length).toEqual(1);
+                    }
+                });
+                it("Add same dependency fails", function () {
+                    expect(depMgr.add_dep(inst_name, id, prio, deps, callbacks)).toBe(true);
+                    expect(depMgr.add_dep(inst_name, id, prio, deps, callbacks)).toBe(false);
+                    expect(depMgr.instances[inst_name].deps.hasOwnProperty(id)).toBe(true);
+                });
+            });
+
+            describe("Remove Dependency", function () {
+                it("Remove existing dependency", function () {
+                    expect(depMgr.add_dep(inst_name, id, prio, deps, callbacks)).toBe(true);
+                    expect(depMgr.remove_dep(inst_name, id)).toBe(true);
+                });
+                it("Remove none-existing dependency", function () {
+                    expect(depMgr.remove_dep(inst_name, id)).toBe(false);
+                });
             });
         });
     });
