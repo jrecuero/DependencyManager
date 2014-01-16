@@ -117,5 +117,86 @@ DM_Instance.prototype.remove_dep = function (id) {
     return null;
 };
 
+/**
+ * @method add_in_dep
+ * @param {String} in_dep_id
+ * @return {Boolean}
+ */
+DM_Instance.prototype.add_in_dep = function (in_dep_id) {
+    if (this.in_deps.indexOf(in_dep_id) == -1) {
+        this.in_deps.push(in_dep_id);
+        return true;
+    }
+    return false;
+};
+
+/**
+ * @method remove_in_dep
+ * @param {String} in_dep_id
+ * @return {Boolean}
+ */
+DM_Instance.prototype.remove_in_dep = function (in_dep_id) {
+    index = this.in_deps.indexOf(in_dep_id);
+    if (index != -1) {
+        this.in_deps.splice(index, 1);
+        return true;
+    }
+    return false;
+};
+
+/**
+ * @method notify_create
+ * @return {DM_InstanceState} DM_InstanceState.CREATED
+ */
+DM_Instance.prototype.notify_create = function (name) {
+    this.state = DM_InstanceState.CREATED;
+    return DM_InstanceState.CREATED;
+};
+
+/**
+ * @method notify_partial
+ * @return {DM_InstanceState} DM_InstanceState.PARTIAL
+ */
+DM_Instance.prototype.notify_partial = function (name) {
+    this.state = DM_InstanceState.PARTIAL;
+    return DM_InstanceState.PARTIAL;
+};
+
+/**
+ * @method notify_active
+ * @return {DM_InstanceState} DM_InstanceState.ACTIVE
+ */
+DM_Instance.prototype.notify_active = function (name) {
+    this.state = DM_InstanceState.ACTIVE;
+    return DM_InstanceState.ACTIVE;
+};
+
+/**
+ * @method notify_inactive
+ * @return {DM_InstanceState} DM_InstanceState.INACTIVE
+ */
+DM_Instance.prototype.notify_inactive = function (name) {
+    this.state = DM_InstanceState.INACTIVE;
+    return DM_InstanceState.INACTIVE;
+};
+
+/**
+ * @method notify_delete
+ * @return {DM_InstanceState} DM_InstanceState.DELETED
+ */
+DM_Instance.prototype.notify_delete = function (name) {
+    this.state = DM_InstanceState.DELETED;
+    return DM_InstanceState.DELETED;
+};
+
+/**
+ * @method notify_destroy
+ * @return {DM_InstanceState} DM_InstanceState.DESTROYED
+ */
+DM_Instance.prototype.notify_destroy = function (name) {
+    this.state = DM_InstanceState.DESTROYED;
+    return DM_InstanceState.DESTROYED;
+};
+
 DM_Instance.prototype.init();
 

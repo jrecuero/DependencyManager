@@ -96,3 +96,81 @@ DependencyManager.prototype.remove_dep = function (name, id) {
     return false;
 };
 
+/**
+ * @method notify_create
+ * @param {String} name
+ * @return {Boolean} true if instance was found, false if not found.
+ */
+DependencyManager.prototype.notify_create = function (name) {
+    if (this.instances.hasOwnProperty(name)) {
+        instance = this.instances[name];
+        instance.notify_create();
+    }
+    return false;
+};
+
+/**
+ * @method notify_partial
+ * @param {String} name
+ * @return {Boolean} true if instance was found, false if not found.
+ */
+DependencyManager.prototype.notify_partial = function (name) {
+    if (this.instances.hasOwnProperty(name)) {
+        instance = this.instances[name];
+        instance.notify_partial();
+    }
+    return false;
+};
+
+/**
+ * @method notify_active
+ * @param {String} name
+ * @return {Boolean} true if instance was found, false if not found.
+ */
+DependencyManager.prototype.notify_active = function (name) {
+    if (this.instances.hasOwnProperty(name)) {
+        instance = this.instances[name];
+        instance.notify_active();
+    }
+    return false;
+};
+
+/**
+ * @method notify_inactive
+ * @param {String} name
+ * @return {Boolean} true if instance was found, false if not found.
+ */
+DependencyManager.prototype.notify_inactive = function (name) {
+    if (this.instances.hasOwnProperty(name)) {
+        instance = this.instances[name];
+        instance.notify_inactive();
+    }
+    return false;
+};
+
+/**
+ * @method notify_delete
+ * @param {String} name
+ * @return {Boolean} true if instance was found, false if not found.
+ */
+DependencyManager.prototype.notify_delete = function (name) {
+    if (this.instances.hasOwnProperty(name)) {
+        instance = this.instances[name];
+        instance.notify_delete();
+    }
+    return false;
+};
+
+/**
+ * @method notify_destroy
+ * @param {String} name
+ * @return {Boolean} true if instance was found, false if not found.
+ */
+DependencyManager.prototype.notify_destroy = function (name) {
+    if (this.instances.hasOwnProperty(name)) {
+        instance = this.instances[name];
+        instance.notify_destroy();
+    }
+    return false;
+};
+

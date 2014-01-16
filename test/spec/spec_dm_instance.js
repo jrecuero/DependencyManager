@@ -43,8 +43,9 @@ describe("Dependency Manager Instance", function () {
     describe("Instance operations", function () {
 
         var reto; 
-        var id   = "tracID";
-        var deps = [1, 2, 3];
+        var id      = "tracID";
+        var deps    = [1, 2, 3];
+        var in_deps = [10, 11, 12];
 
         beforeEach(function () {
             reto = instance.register('tracing');
@@ -96,6 +97,73 @@ describe("Dependency Manager Instance", function () {
             });
             it("Remove none-existing dependency", function () {
                 expect(instance.remove_dep(id)).toBe(null);
+            });
+        });
+
+        describe("Add IN Dependency", function() {
+            it("Add new IN dependency", function() {
+                expect(instance.add_in_dep(in_deps[0])).toBe(true);
+                expect(instance.add_in_dep(in_deps[1])).toBe(true);
+                expect(instance.add_in_dep(in_deps[2])).toBe(true);
+                expect(instance.in_deps.length).toEqual(3);
+                expect(instance.in_deps[0]).toEqual(in_deps[0]);
+                expect(instance.in_deps[1]).toEqual(in_deps[1]);
+                expect(instance.in_deps[2]).toEqual(in_deps[2]);
+            });
+            it("Add already added IN dependency", function() {
+                expect(instance.add_in_dep(in_deps[0])).toBe(true);
+                expect(instance.add_in_dep(in_deps[0])).toBe(false);
+                expect(instance.in_deps.length).toEqual(1);
+            });
+        });
+
+        describe("Remove IN Dependency", function() {
+            it("Remove existing IN dependency", function() {
+                expect(instance.add_in_dep(in_deps[0])).toBe(true);
+                expect(instance.add_in_dep(in_deps[1])).toBe(true);
+                expect(instance.add_in_dep(in_deps[2])).toBe(true);
+                expect(instance.remove_in_dep(in_deps[0])).toBe(true);
+                expect(instance.in_deps.indexOf(in_deps[0])).toEqual(-1);
+                expect(instance.in_deps.length).toEqual(2);
+                expect(instance.remove_in_dep(in_deps[1])).toBe(true);
+                expect(instance.in_deps.indexOf(in_deps[1])).toEqual(-1);
+                expect(instance.in_deps.length).toEqual(1);
+                expect(instance.remove_in_dep(in_deps[2])).toBe(true);
+                expect(instance.in_deps.indexOf(in_deps[2])).toEqual(-1);
+                expect(instance.in_deps.length).toEqual(0);
+            });
+            it("Remove NOT existing IN dependency", function () {
+                expect(instance.add_in_dep(in_deps[0])).toBe(true);
+                expect(instance.remove_in_dep(in_deps[2])).toBe(false);
+                expect(instance.in_deps.indexOf(in_deps[0])).toEqual(0);
+                expect(instance.in_deps.length).toEqual(1);
+            });
+        });
+
+        describe("Notify change state", function () {
+            it("Notify Create change state to CREATED", function () {
+                expect(instance.notify_create()).toEqual(DM_InstanceState.CREATED);
+                expect(instance.state).toEqual(DM_InstanceState.CREATED);
+            });
+            it("Notify Partial change state to PARTIAL", function () {
+                expect(instance.notify_partial()).toEqual(DM_InstanceState.PARTIAL);
+                expect(instance.state).toEqual(DM_InstanceState.PARTIAL);
+            });
+            it("Notify Active change state to ACTIVE", function () {
+                expect(instance.notify_active()).toEqual(DM_InstanceState.ACTIVE);
+                expect(instance.state).toEqual(DM_InstanceState.ACTIVE);
+            });
+            it("Notify Inactive change state to INACTIVE", function () {
+                expect(instance.notify_inactive()).toEqual(DM_InstanceState.INACTIVE);
+                expect(instance.state).toEqual(DM_InstanceState.INACTIVE);
+            });
+            it("Notify Delete change state to DELETED", function () {
+                expect(instance.notify_delete()).toEqual(DM_InstanceState.DELETED);
+                expect(instance.state).toEqual(DM_InstanceState.DELETED);
+            });
+            it("Notify Destroy change state to DESTROYED", function () {
+                expect(instance.notify_destroy()).toEqual(DM_InstanceState.DESTROYED);
+                expect(instance.state).toEqual(DM_InstanceState.DESTROYED);
             });
         });
     });
