@@ -42,13 +42,16 @@ describe("Dependency Manager Instance", function () {
 
     describe("Instance operations", function () {
 
-        var reto; 
+        var reto;
         var id      = "tracID";
-        var deps    = [1, 2, 3];
-        var in_deps = [10, 11, 12];
+        var deps    = null;
+        var in_deps = ['One', 'Two', 'Three'];
 
         beforeEach(function () {
             reto = instance.register('tracing');
+            deps = jasmine.createSpyObj('deps', ['callbacks', 'name']);
+            deps.callbacks = jasmine.createSpyObj('callbacks',
+                    ['created', 'partial', 'active', 'inactive', 'deleted', 'destroyed']);
         });
 
         describe("Register instance", function () {
@@ -80,6 +83,12 @@ describe("Dependency Manager Instance", function () {
                 expect(instance.add_dep(id, deps)).toBe(true);
                 expect(instance.deps.hasOwnProperty(id)).toBe(true);
                 expect(instance.deps[id]).toEqual(deps);
+                expect(deps.callbacks.created).toHaveBeenCalled();
+                expect(deps.callbacks.partial).not.toHaveBeenCalled();
+                expect(deps.callbacks.active).not.toHaveBeenCalled();
+                expect(deps.callbacks.inactive).not.toHaveBeenCalled();
+                expect(deps.callbacks.deleted).not.toHaveBeenCalled();
+                expect(deps.callbacks.destroyed).not.toHaveBeenCalled();
             });
             it("Add same dependency fails", function () {
                 expect(instance.add_dep(id, deps)).toBe(true);

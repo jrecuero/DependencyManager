@@ -21,13 +21,13 @@ function empty_obj(obj) {
  * @static
  */
 var DM_InstanceState = {
-    NONE:      0,
-    CREATED:   1,
-    PARTIAL:   2,
-    ACTIVE:    3,
-    INACTIVE:  4,
-    DELETED:   5,
-    DESTROYED: 6
+    NONE:      "none",
+    CREATED:   "created",
+    PARTIAL:   "partial",
+    ACTIVE:    "active",
+    INACTIVE:  "inactive",
+    DELETED:   "deleted",
+    DESTROYED: "destroyed"
 };
 
 

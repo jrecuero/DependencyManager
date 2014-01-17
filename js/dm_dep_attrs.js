@@ -1,8 +1,8 @@
 /**
- * @class DM_InstanceDep
+ * @class DM_DepAttrs
  * @constructor
  */
-function DM_InstanceDep() {
+function DM_DepAttrs() {
     /**
      * @property name
      * @type String
@@ -28,10 +28,10 @@ function DM_InstanceDep() {
  * @param {Array} attrs
  * @return {DM_Relation} relation
  */
-DM_InstanceDep.prototype.create = function (name, attrs, relation) {
+DM_DepAttrs.prototype.create = function (name, attrs, relation) {
     this.name     = name;
     this.attrs    = attrs;
     this.relation = relation;
-    return true;
+    return this;
 };
 

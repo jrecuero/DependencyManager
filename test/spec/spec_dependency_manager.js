@@ -60,21 +60,31 @@ describe("Dependency Manager", function() {
 
             var id        = "new id";
             var prio      = 100;
-            var deps      = ['One', 'Two', 'Three'];
-            var callbacks = {one: "one", two: "two", three: "three"};
+            var deps      = [jasmine.createSpyObj('one', ['name', 'attrs', 'relation'])];
+                             jasmine.createSpyObj('two', ['name', 'attrs', 'relation'])];
+                             jasmine.createSpyObj('three', ['name', 'attrs', 'relation'])];
+            var callbacks = null;
 
             beforeEach(function () {
                 for (var i = 0; i < deps.length; i++) {
-                    depMgr.register(deps[i]);
+                    depMgr.register(deps[i].name);
                 }
+                callbacks = jasmine.createSpyObj('callbacks',
+                    ['created', 'partial', 'active', 'inactive', 'deleted', 'destroyed']);
             });
 
             describe("Add Dependency", function() {
                 it("Add new dependency", function () {
                     expect(depMgr.add_dep(inst_name, id, prio, deps, callbacks)).toBe(true);
                     expect(depMgr.instances[inst_name].deps.hasOwnProperty(id)).toBe(true);
+                    expect(callbacks.created).toHaveBeenCalled();
+                    expect(callbacks.partial).not.toHaveBeenCalled();
+                    expect(callbacks.active).not.toHaveBeenCalled();
+                    expect(callbacks.inactive).not.toHaveBeenCalled();
+                    expect(callbacks.deleted).not.toHaveBeenCalled();
+                    expect(callbacks.destroyed).not.toHaveBeenCalled();
                     for (var i = 0; i < deps.length; i++) {
-                        expect(depMgr.instances[deps[i]].in_deps.length).toEqual(1);
+                        expect(depMgr.instances[deps[i].name].in_deps.length).toEqual(1);
                     }
                 });
                 it("Add same dependency fails", function () {

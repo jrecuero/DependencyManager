@@ -5,7 +5,7 @@ window.onload = function () {
 
 /**
  * Class with API for Dependency Manager Module.
- * 
+ *
  * @class DependencyManager
  * @constructor
  */
@@ -25,7 +25,7 @@ function DependencyManager() {
 
 /**
  * Register a new instance name to the Dependency Manager.
- * 
+ *
  * @method register
  * @param {string} name Instance name to be registered.
  * @return {boolean} true if instance was registered. false if instance name
@@ -43,7 +43,7 @@ DependencyManager.prototype.register = function (name) {
 
 /**
  * Unregister an instance name from the Dependency Manager.
- * 
+ *
  * @method unregister
  * @param {string} name Instance name to be unregistered.
  * @return {boolean} true if instance was unregistered. false if instance
@@ -72,15 +72,18 @@ DependencyManager.prototype.unregister = function (name) {
 DependencyManager.prototype.add_dep = function (name, id, prio, deps, callbacks) {
     if (this.instances.hasOwnProperty(name)) {
         instance = this.instances[name];
+
+        // Create a new dependency object with all information given.
         dep = new DM_Dep();
         dep.register(name, id, prio, deps, callbacks);
+
         // For every dependency in the deps list, we have to add one entry for
         // every one of then in the in_deps array, so when changing state for
         // that instance we can find in all dependencies where it is being
         // included.
-        if (instance.add_dep(id, deps)) {
-            for (var i = 0; i < deps.length; i++) {
-                dep_instance = this.instances[deps[i]];
+        if (instance.add_dep(id, dep)) {
+            for (var i = 0; i < dep.deps.length; i++) {
+                dep_instance = this.instances[deps[i].name];
                 if (dep_instance) {
                     if (!dep_instance.add_in_dep(id)) {
                         return false;
@@ -89,11 +92,15 @@ DependencyManager.prototype.add_dep = function (name, id, prio, deps, callbacks)
             }
             return true;
         }
-    } 
+    }
     return false;
 };
 
 /**
+ * Removes dependency for the given ID. It removes not only the dependency
+ * in the instance object, but also that dependency in all IN dependency
+ * for any other instances.
+ *
  * @method remove_dep
  * @param {string} name
  * @param {string} id

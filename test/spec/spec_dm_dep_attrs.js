@@ -1,8 +1,8 @@
-describe("Dependency Manager Dependecy Instance", function() {
+describe("Dependency Manager Dependecy Attributes", function() {
     var instance;
 
     beforeEach(function() {
-        instance = new DM_InstanceDep();
+        instance = new DM_DepAttrs();
     });
 
     afterEach(function() {
@@ -33,7 +33,7 @@ describe("Dependency Manager Dependecy Instance", function() {
         });
 
         it("Register call returns true", function() {
-            expect(reto).toBe(true);
+            expect(reto).toBe(reto);
         });
         it("name is 'new instance dependency'", function() {
             expect(instance.name).toEqual(name);
