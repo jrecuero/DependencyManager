@@ -1,14 +1,14 @@
 /**
- * Class methods required for handling individual instances registered
+ * Class methods required for handling individual entities registered
  * to the Dependency Manager.
  *
- * One instance is an entry that Depedency Manager will be used as a
+ * One entity is an entry that Depedency Manager will be used as a
  * dependency or to contain dependencies.
  *
- * @class DM_Instance
+ * @class DM_Entity
  * @constructor
  */
-function DM_Instance() {
+function DM_Entity() {
     /**
      * @property name
      * @type String
@@ -17,9 +17,9 @@ function DM_Instance() {
 
     /**
      * @property state
-     * @type DM_InstanceState
+     * @type DM_EntityState
      */
-    this.state   = DM_InstanceState.NONE;
+    this.state   = DM_EntityState.NONE;
 
     /**
      * @property deps
@@ -35,14 +35,14 @@ function DM_Instance() {
 }
 
 /**
- * Initialize DM_Instance class variables.
+ * Initialize DM_Entity class variables.
  *
  * @method init
  * @static
  */
-DM_Instance.prototype.init = function () {
-    DM_Instance.prototype.ID      = 0;
-    DM_Instance.prototype.COUNTER = 0;
+DM_Entity.prototype.init = function () {
+    DM_Entity.prototype.ID      = 0;
+    DM_Entity.prototype.COUNTER = 0;
 };
 
 /**
@@ -51,45 +51,45 @@ DM_Instance.prototype.init = function () {
  * @method cleanID
  * @return {boolean} true
  */
-DM_Instance.prototype.cleanID = function () {
-    DM_Instance.prototype.ID      = 0;
-    DM_Instance.prototype.COUNTER = 0;
+DM_Entity.prototype.cleanID = function () {
+    DM_Entity.prototype.ID      = 0;
+    DM_Entity.prototype.COUNTER = 0;
     return true;
 };
 
 /**
- * Register a new name to be used for the instance.
+ * Register a new name to be used for the entity.
  *
  * @method register
- * @param {string} name Instance name to be used.
+ * @param {string} name entity name to be used.
  * @return {boolean} true.
  */
-DM_Instance.prototype.register = function (name) {
+DM_Entity.prototype.register = function (name) {
     this.name    = name;
-    this.state   = DM_InstanceState.CREATED;
+    this.state   = DM_EntityState.CREATED;
     this.deps    = {};
     this.in_deps = [];
-    DM_Instance.prototype.ID++;
-    DM_Instance.prototype.COUNTER++;
+    DM_Entity.prototype.ID++;
+    DM_Entity.prototype.COUNTER++;
     return true;
 };
 
 /**
- * Unregister all instance values.
+ * Unregister all entity values.
  *
  * @method unregister
  * @return {boolean} true.
  */
-DM_Instance.prototype.unregister = function () {
+DM_Entity.prototype.unregister = function () {
     this.name    = null;
-    this.state   = DM_InstanceState.NONE;
+    this.state   = DM_EntityState.NONE;
     this.deps    = null;
     this.in_deps = null;
-    DM_Instance.prototype.COUNTER--;
+    DM_Entity.prototype.COUNTER--;
     return true;
 };
 
-DM_Instance.prototype._cb_for_state = function (deps, state) {
+DM_Entity.prototype._cb_for_state = function (deps, state) {
     if (deps.callbacks[state] != null) {
         return deps.callbacks[state](this.name);
     }
@@ -102,7 +102,7 @@ DM_Instance.prototype._cb_for_state = function (deps, state) {
  * @param {DM_Dep} deps Dependencies.
  * @return {boolean} true
  */
-DM_Instance.prototype.add_dep = function (id, deps) {
+DM_Entity.prototype.add_dep = function (id, deps) {
     if (!this.deps.hasOwnProperty(id)) {
         this.deps[id] = deps;
         this._cb_for_state(deps, this.state);
@@ -116,7 +116,7 @@ DM_Instance.prototype.add_dep = function (id, deps) {
  * @param {string} id
  * @return {DM_Dep} null if not found.
  */
-DM_Instance.prototype.remove_dep = function (id) {
+DM_Entity.prototype.remove_dep = function (id) {
     if (this.deps.hasOwnProperty(id)) {
         deps = this.deps[id];
         delete this.deps[id];
@@ -130,7 +130,7 @@ DM_Instance.prototype.remove_dep = function (id) {
  * @param {String} in_dep_id
  * @return {Boolean}
  */
-DM_Instance.prototype.add_in_dep = function (in_dep_id) {
+DM_Entity.prototype.add_in_dep = function (in_dep_id) {
     if (this.in_deps.indexOf(in_dep_id) == -1) {
         this.in_deps.push(in_dep_id);
         return true;
@@ -143,7 +143,7 @@ DM_Instance.prototype.add_in_dep = function (in_dep_id) {
  * @param {String} in_dep_id
  * @return {Boolean}
  */
-DM_Instance.prototype.remove_in_dep = function (in_dep_id) {
+DM_Entity.prototype.remove_in_dep = function (in_dep_id) {
     index = this.in_deps.indexOf(in_dep_id);
     if (index != -1) {
         this.in_deps.splice(index, 1);
@@ -154,63 +154,63 @@ DM_Instance.prototype.remove_in_dep = function (in_dep_id) {
 
 /**
  * @method notify_create
- * @return {DM_InstanceState} DM_InstanceState.CREATED
+ * @return {DM_EntityState} DM_EntityState.CREATED
  */
-DM_Instance.prototype.notify_create = function (name) {
-    this.state = DM_InstanceState.CREATED;
+DM_Entity.prototype.notify_create = function (name) {
+    this.state = DM_EntityState.CREATED;
     //this._cb_for_state(this.state);
     return this.state;
 };
 
 /**
  * @method notify_partial
- * @return {DM_InstanceState} DM_InstanceState.PARTIAL
+ * @return {DM_EntityState} DM_EntityState.PARTIAL
  */
-DM_Instance.prototype.notify_partial = function (name) {
-    this.state = DM_InstanceState.PARTIAL;
+DM_Entity.prototype.notify_partial = function (name) {
+    this.state = DM_EntityState.PARTIAL;
     //this._cb_for_state(this.state);
     return this.state;
 };
 
 /**
  * @method notify_active
- * @return {DM_InstanceState} DM_InstanceState.ACTIVE
+ * @return {DM_EntityState} DM_EntityState.ACTIVE
  */
-DM_Instance.prototype.notify_active = function (name) {
-    this.state = DM_InstanceState.ACTIVE;
+DM_Entity.prototype.notify_active = function (name) {
+    this.state = DM_EntityState.ACTIVE;
     //this._cb_for_state(this.state);
     return this.state;
 };
 
 /**
  * @method notify_inactive
- * @return {DM_InstanceState} DM_InstanceState.INACTIVE
+ * @return {DM_EntityState} DM_EntityState.INACTIVE
  */
-DM_Instance.prototype.notify_inactive = function (name) {
-    this.state = DM_InstanceState.INACTIVE;
+DM_Entity.prototype.notify_inactive = function (name) {
+    this.state = DM_EntityState.INACTIVE;
     //this._cb_for_state(this.state);
     return this.state;
 };
 
 /**
  * @method notify_delete
- * @return {DM_InstanceState} DM_InstanceState.DELETED
+ * @return {DM_EntityState} DM_EntityState.DELETED
  */
-DM_Instance.prototype.notify_delete = function (name) {
-    this.state = DM_InstanceState.DELETED;
+DM_Entity.prototype.notify_delete = function (name) {
+    this.state = DM_EntityState.DELETED;
     //this._cb_for_state(this.state);
     return this.state;
 };
 
 /**
  * @method notify_destroy
- * @return {DM_InstanceState} DM_InstanceState.DESTROYED
+ * @return {DM_EntityState} DM_EntityState.DESTROYED
  */
-DM_Instance.prototype.notify_destroy = function (name) {
-    this.state = DM_InstanceState.DESTROYED;
+DM_Entity.prototype.notify_destroy = function (name) {
+    this.state = DM_EntityState.DESTROYED;
     //this._cb_for_state(this.state);
     return this.state;
 };
 
-DM_Instance.prototype.init();
+DM_Entity.prototype.init();
 

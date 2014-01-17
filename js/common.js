@@ -17,10 +17,10 @@ function empty_obj(obj) {
 /**
  * States an instance can have in dependency manager.
  *
- * @class DM_InstanceState
+ * @class DM_EntityState
  * @static
  */
-var DM_InstanceState = {
+var DM_EntityState = {
     NONE:      "none",
     CREATED:   "created",
     PARTIAL:   "partial",
