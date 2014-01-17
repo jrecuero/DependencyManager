@@ -35,8 +35,7 @@ DependencyManager.prototype.register = function (name) {
     if (this.entities.hasOwnProperty(name)) {
         return false;
     } else {
-        this.entities[name] = new DM_Entity();
-        this.entities[name].register(name);
+        this.entities[name] = new DM_Entity(name);
         return true;
     }
 };
@@ -74,8 +73,7 @@ DependencyManager.prototype.add_dep = function (name, id, prio, deps, callbacks)
         entity = this.entities[name];
 
         // Create a new dependency object with all information given.
-        dep = new DM_Dep();
-        dep.register(name, id, prio, deps, callbacks);
+        dep = new DM_Dep(name, id, prio, deps, callbacks);
 
         // For every dependency in the deps list, we have to add one entry for
         // every one of then in the in_deps array, so when changing state for

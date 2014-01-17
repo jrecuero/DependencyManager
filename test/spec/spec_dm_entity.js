@@ -1,36 +1,16 @@
 describe("Dependency Manager Entity", function () {
 
     var entity;
+    var name = "tracing";
 
     beforeEach(function () {
-        entity = new DM_Entity();
+        entity = new DM_Entity(name);
     });
 
     afterEach(function () {
         entity.cleanID();
         entity = null;
     })
-
-    describe("New entity", function () {
-        it("name is null", function () {
-            expect(entity.name).toBe(null);
-        });
-        it("state is NONE", function () {
-            expect(entity.state).toBe(DM_EntityState.NONE);
-        });
-        it("dependencies are null", function () {
-            expect(entity.deps).toBe(null);
-        });
-        it("in dependencies are null", function () {
-            expect(entity.in_deps).toBe(null);
-        });
-        it("ID is 0", function () {
-            expect(entity.ID).toEqual(0);
-        });
-        it("COUNTER is 0", function () {
-            expect(entity.COUNTER).toEqual(0);
-        });
-    });
 
     describe("Reset Counters", function () {
         it("ID and COUNTER are reseted to 0", function () {
@@ -42,21 +22,18 @@ describe("Dependency Manager Entity", function () {
 
     describe("Entity operations", function () {
 
-        var reto;
         var id      = "tracID";
         var deps    = null;
         var in_deps = ['One', 'Two', 'Three'];
 
         beforeEach(function () {
-            reto = entity.register('tracing');
             deps = jasmine.createSpyObj('deps', ['callbacks', 'name']);
             deps.callbacks = jasmine.createSpyObj('callbacks',
                     ['created', 'partial', 'active', 'inactive', 'deleted', 'destroyed']);
         });
 
-        describe("Register entity", function () {
+        describe("Create entity", function () {
             it("Entity name: 'tracing', state: CREATED, ID: 1", function () {
-                expect(reto).toBe(true);
                 expect(entity.name).toEqual('tracing');
                 expect(entity.state).toEqual(DM_EntityState.CREATED);
                 expect(empty_obj(entity.deps)).toBe(true)
@@ -64,18 +41,6 @@ describe("Dependency Manager Entity", function () {
                 expect(entity.ID).toEqual(1);
                 expect(entity.COUNTER).toEqual(1);
             })
-        });
-
-        describe("Unregister entity", function () {
-            it("Entity after unregister is all null", function () {
-                expect(entity.unregister()).toBe(true);
-                expect(entity.name).toBe(null);
-                expect(entity.state).toBe(DM_EntityState.NONE);
-                expect(entity.deps).toBe(null);
-                expect(entity.in_deps).toBe(null);
-                expect(entity.ID).toEqual(1);
-                expect(entity.COUNTER).toEqual(0);
-            });
         });
 
         describe("Add Dependency", function () {

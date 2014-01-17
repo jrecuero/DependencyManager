@@ -7,31 +7,35 @@
  *
  * @class DM_Entity
  * @constructor
+ * @param {string} name entity name to be used.
  */
-function DM_Entity() {
+function DM_Entity(name) {
     /**
      * @property name
      * @type String
      */
-    this.name    = null;
+    this.name = name;
 
     /**
      * @property state
      * @type DM_EntityState
      */
-    this.state   = DM_EntityState.NONE;
+    this.state   = DM_EntityState.CREATED;
 
     /**
      * @property deps
      * @type Object
      */
-    this.deps    = null;
+    this.deps    = {};
 
     /**
      * @property in_deps
      * @type Object
      */
-    this.in_deps = null;
+    this.in_deps = [];
+
+    DM_Entity.prototype.ID++;
+    DM_Entity.prototype.COUNTER++;
 }
 
 /**
@@ -43,6 +47,7 @@ function DM_Entity() {
 DM_Entity.prototype.init = function () {
     DM_Entity.prototype.ID      = 0;
     DM_Entity.prototype.COUNTER = 0;
+    return true;
 };
 
 /**
@@ -52,41 +57,7 @@ DM_Entity.prototype.init = function () {
  * @return {boolean} true
  */
 DM_Entity.prototype.cleanID = function () {
-    DM_Entity.prototype.ID      = 0;
-    DM_Entity.prototype.COUNTER = 0;
-    return true;
-};
-
-/**
- * Register a new name to be used for the entity.
- *
- * @method register
- * @param {string} name entity name to be used.
- * @return {boolean} true.
- */
-DM_Entity.prototype.register = function (name) {
-    this.name    = name;
-    this.state   = DM_EntityState.CREATED;
-    this.deps    = {};
-    this.in_deps = [];
-    DM_Entity.prototype.ID++;
-    DM_Entity.prototype.COUNTER++;
-    return true;
-};
-
-/**
- * Unregister all entity values.
- *
- * @method unregister
- * @return {boolean} true.
- */
-DM_Entity.prototype.unregister = function () {
-    this.name    = null;
-    this.state   = DM_EntityState.NONE;
-    this.deps    = null;
-    this.in_deps = null;
-    DM_Entity.prototype.COUNTER--;
-    return true;
+    return DM_Entity.prototype.init();
 };
 
 DM_Entity.prototype._cb_for_state = function (deps, state) {

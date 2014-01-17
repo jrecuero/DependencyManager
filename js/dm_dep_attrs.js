@@ -1,37 +1,30 @@
 /**
  * @class DM_DepAttrs
  * @constructor
+ * @param {string} name
+ * @param {Array} attrs
+ * @return {DM_Relation} relation
  */
-function DM_DepAttrs() {
+function DM_DepAttrs (name, attrs, relation) {
     /**
      * @property name
      * @type String
      */
-    this.name     = null;
+    this.name = name;
 
     /**
      * @property attrs
      * @type Array
      */
-    this.attrs    = [];
+    this.attrs = attrs;
 
     /**
      * @property relation
      * @type DM_Relation
      */
     this.relation = DM_Relation.NONE;
+    if (relation != null) {
+        this.relation = relation;
+    }
 }
-
-/**
- * @method create
- * @param {string} name
- * @param {Array} attrs
- * @return {DM_Relation} relation
- */
-DM_DepAttrs.prototype.create = function (name, attrs, relation) {
-    this.name     = name;
-    this.attrs    = attrs;
-    this.relation = relation;
-    return this;
-};
 
