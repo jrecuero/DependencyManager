@@ -26,13 +26,13 @@ function DM_Entity(name) {
      * @property deps
      * @type Object
      */
-    this.deps    = {};
+    this.deps = {};
 
     /**
      * @property in_deps
      * @type Object
      */
-    this.in_deps = [];
+    this.in_deps = {};
 
     DM_Entity.prototype.ID++;
     DM_Entity.prototype.COUNTER++;
@@ -60,11 +60,37 @@ DM_Entity.prototype.cleanID = function () {
     return DM_Entity.prototype.init();
 };
 
-DM_Entity.prototype._cb_for_state = function (deps, state) {
-    if (deps.callbacks[state] != null) {
-        return deps.callbacks[state](this.name);
+/**
+ * @method _cb_for_state
+ * @param {DM_Dep} dep
+ * @param {DM_EntityState} state
+ * @return {Object}
+ */
+DM_Entity.prototype._cb_for_state = function (dep, state) {
+    if (dep.callbacks[state] != null) {
+        return dep.callbacks[state](this.name);
     }
     return null;
+};
+
+/**
+ * @method _check_dependencies_for_state
+ * @param {DM_EntityState} state
+ */
+DM_Entity.prototype._check_dependencies_for_state = function (state) {
+    for (var dep_id in this.in_deps) {
+        var state_match = true;
+        dep = this.in_deps[dep_id];
+        for (var i = 0; i < dep.deps.length; i++) {
+            if (dep.deps[i].state != state) {
+                state_match = false;
+                break;
+            }
+        }
+        if (state_match == true) {
+            this._cb_for_state(dep, state);
+        }
+    }
 };
 
 /**
@@ -98,12 +124,13 @@ DM_Entity.prototype.remove_dep = function (id) {
 
 /**
  * @method add_in_dep
- * @param {String} in_dep_id
+ * @param {DM_Dep} in_dep
  * @return {Boolean}
  */
-DM_Entity.prototype.add_in_dep = function (in_dep_id) {
-    if (this.in_deps.indexOf(in_dep_id) == -1) {
-        this.in_deps.push(in_dep_id);
+DM_Entity.prototype.add_in_dep = function (in_dep) {
+    in_dep_id = in_dep.id;
+    if (!this.in_deps.hasOwnProperty(in_dep_id)) {
+        this.in_deps[in_dep_id] = in_dep;
         return true;
     }
     return false;
@@ -115,12 +142,12 @@ DM_Entity.prototype.add_in_dep = function (in_dep_id) {
  * @return {Boolean}
  */
 DM_Entity.prototype.remove_in_dep = function (in_dep_id) {
-    index = this.in_deps.indexOf(in_dep_id);
-    if (index != -1) {
-        this.in_deps.splice(index, 1);
-        return true;
+    if (this.in_deps.hasOwnProperty(in_dep_id)) {
+        in_dep = this.in_deps[in_dep_id];
+        delete this.in_deps[in_dep_id];
+        return in_dep;
     }
-    return false;
+    return null;
 };
 
 /**

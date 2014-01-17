@@ -68,22 +68,22 @@ DependencyManager.prototype.unregister = function (name) {
  * @return {boolean} true if dependency was added. false if entity name was
  * not found.
  */
-DependencyManager.prototype.add_dep = function (name, id, prio, deps, callbacks) {
+DependencyManager.prototype.add_dep = function (name, id, prio, inst_deps, callbacks) {
     if (this.entities.hasOwnProperty(name)) {
         entity = this.entities[name];
 
         // Create a new dependency object with all information given.
-        dep = new DM_Dep(name, id, prio, deps, callbacks);
+        dep = new DM_Dep(name, id, prio, inst_deps, callbacks);
 
-        // For every dependency in the deps list, we have to add one entry for
+        // For every dependency in the inst_deps list, we have to add one entry for
         // every one of then in the in_deps array, so when changing state for
         // that entity we can find in all dependencies where it is being
         // included.
         if (entity.add_dep(id, dep)) {
-            for (var i = 0; i < dep.deps.length; i++) {
-                dep_entity = this.entities[deps[i].name];
+            for (var i = 0; i < dep.inst_deps.length; i++) {
+                dep_entity = this.entities[inst_deps[i].name];
                 if (dep_entity) {
-                    if (!dep_entity.add_in_dep(id)) {
+                    if (!dep_entity.add_in_dep(dep)) {
                         return false;
                     }
                 }

@@ -24,12 +24,17 @@ describe("Dependency Manager Entity", function () {
 
         var id      = "tracID";
         var deps    = null;
-        var in_deps = ['One', 'Two', 'Three'];
+        var in_deps = null;
 
         beforeEach(function () {
+            var i;
             deps = jasmine.createSpyObj('deps', ['callbacks', 'name']);
             deps.callbacks = jasmine.createSpyObj('callbacks',
                     ['created', 'partial', 'active', 'inactive', 'deleted', 'destroyed']);
+            for (i = 0, in_deps = []; i < 3; i++) {
+                in_deps.push(jasmine.createSpyObj('in_deps', ['name', 'id', 'deps', 'callbacks']));
+                in_deps[i].id = i.toString();
+            }
         });
 
         describe("Create entity", function () {
@@ -37,7 +42,7 @@ describe("Dependency Manager Entity", function () {
                 expect(entity.name).toEqual('tracing');
                 expect(entity.state).toEqual(DM_EntityState.CREATED);
                 expect(empty_obj(entity.deps)).toBe(true)
-                expect(entity.in_deps.length).toEqual(0);
+                expect(empty_obj(entity.in_deps)).toBe(true);
                 expect(entity.ID).toEqual(1);
                 expect(entity.COUNTER).toEqual(1);
             })
@@ -79,15 +84,13 @@ describe("Dependency Manager Entity", function () {
                 expect(entity.add_in_dep(in_deps[0])).toBe(true);
                 expect(entity.add_in_dep(in_deps[1])).toBe(true);
                 expect(entity.add_in_dep(in_deps[2])).toBe(true);
-                expect(entity.in_deps.length).toEqual(3);
-                expect(entity.in_deps[0]).toEqual(in_deps[0]);
-                expect(entity.in_deps[1]).toEqual(in_deps[1]);
-                expect(entity.in_deps[2]).toEqual(in_deps[2]);
+                expect(entity.in_deps[in_deps[0].id]).toEqual(in_deps[0]);
+                expect(entity.in_deps[in_deps[1].id]).toEqual(in_deps[1]);
+                expect(entity.in_deps[in_deps[2].id]).toEqual(in_deps[2]);
             });
             it("Add already added IN dependency", function() {
                 expect(entity.add_in_dep(in_deps[0])).toBe(true);
                 expect(entity.add_in_dep(in_deps[0])).toBe(false);
-                expect(entity.in_deps.length).toEqual(1);
             });
         });
 
@@ -96,21 +99,13 @@ describe("Dependency Manager Entity", function () {
                 expect(entity.add_in_dep(in_deps[0])).toBe(true);
                 expect(entity.add_in_dep(in_deps[1])).toBe(true);
                 expect(entity.add_in_dep(in_deps[2])).toBe(true);
-                expect(entity.remove_in_dep(in_deps[0])).toBe(true);
-                expect(entity.in_deps.indexOf(in_deps[0])).toEqual(-1);
-                expect(entity.in_deps.length).toEqual(2);
-                expect(entity.remove_in_dep(in_deps[1])).toBe(true);
-                expect(entity.in_deps.indexOf(in_deps[1])).toEqual(-1);
-                expect(entity.in_deps.length).toEqual(1);
-                expect(entity.remove_in_dep(in_deps[2])).toBe(true);
-                expect(entity.in_deps.indexOf(in_deps[2])).toEqual(-1);
-                expect(entity.in_deps.length).toEqual(0);
+                expect(entity.remove_in_dep(in_deps[0].id)).toBe(in_deps[0]);
+                expect(entity.remove_in_dep(in_deps[1].id)).toBe(in_deps[1]);
+                expect(entity.remove_in_dep(in_deps[2].id)).toBe(in_deps[2]);
             });
             it("Remove NOT existing IN dependency", function () {
                 expect(entity.add_in_dep(in_deps[0])).toBe(true);
-                expect(entity.remove_in_dep(in_deps[2])).toBe(false);
-                expect(entity.in_deps.indexOf(in_deps[0])).toEqual(0);
-                expect(entity.in_deps.length).toEqual(1);
+                expect(entity.remove_in_dep(in_deps[2].id)).toBe(null);
             });
         });
 
