@@ -11,24 +11,34 @@
  */
 function DM_Entity(name) {
     /**
+     * Entity name.
+     *
      * @property name
      * @type String
      */
     this.name = name;
 
     /**
+     * Entity State.
+     *
      * @property state
      * @type DM_EntityState
      */
     this.state   = DM_EntityState.CREATED;
 
     /**
+     * Entity dependencies. Dependencies are stored in a object like, where
+     * attribute name is the dependency id and value is the DM_Dep instance.
+     *
      * @property deps
      * @type Object
      */
     this.deps = {};
 
     /**
+     * Other Entities that have this instance as a dependency. In Dependency is
+     * stored in a object like, where attribute nams is the dependency id where
+     * this instance is a dependency and value is the DM_Dep instance.
      * @property in_deps
      * @type Object
      */
@@ -45,7 +55,23 @@ function DM_Entity(name) {
  * @static
  */
 DM_Entity.prototype.init = function () {
+    /**
+     * This is a unique ID for every entity created.
+     *
+     * @propety ID
+     * @static
+     * @type {Int}
+     */
     DM_Entity.prototype.ID      = 0;
+
+    /**
+     * This is a counter with the number of entities that are created at one
+     * point.
+     *
+     * @property COUNTER
+     * @static
+     * @type {Int}
+     */
     DM_Entity.prototype.COUNTER = 0;
     return true;
 };
@@ -61,7 +87,11 @@ DM_Entity.prototype.cleanID = function () {
 };
 
 /**
+ * Check if DM_Dep has a callback for the given state and call that method if
+ * it exists.
+ *
  * @method _cb_for_state
+ * @private
  * @param {DM_Dep} dep
  * @param {DM_EntityState} state
  * @return {Object}
@@ -96,13 +126,13 @@ DM_Entity.prototype._check_dependencies_for_state = function (state) {
 /**
  * @method add_dep
  * @param {string} id
- * @param {DM_Dep} deps Dependencies.
+ * @param {DM_Dep} dep Dependencies.
  * @return {boolean} true
  */
-DM_Entity.prototype.add_dep = function (id, deps) {
+DM_Entity.prototype.add_dep = function (id, dep) {
     if (!this.deps.hasOwnProperty(id)) {
-        this.deps[id] = deps;
-        this._cb_for_state(deps, this.state);
+        this.deps[id] = dep;
+        this._cb_for_state(dep, this.state);
         return true;
     }
     return false
@@ -110,13 +140,13 @@ DM_Entity.prototype.add_dep = function (id, deps) {
 
 /**
  * @method remove_dep
- * @param {string} id
+ * @param {string} dep_id
  * @return {DM_Dep} null if not found.
  */
-DM_Entity.prototype.remove_dep = function (id) {
-    if (this.deps.hasOwnProperty(id)) {
-        deps = this.deps[id];
-        delete this.deps[id];
+DM_Entity.prototype.remove_dep = function (dep_id) {
+    if (this.deps.hasOwnProperty(dep_id)) {
+        deps = this.deps[dep_id];
+        delete this.deps[dep_id];
         return deps;
     }
     return null;

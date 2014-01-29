@@ -64,24 +64,24 @@ DependencyManager.prototype.unregister = function (name) {
  * @param {string} id
  * @param {int} prio
  * @param {Array} deps
- * @param {Array} callbacks
+ * @param {DM_Callback} callbacks
  * @return {boolean} true if dependency was added. false if entity name was
  * not found.
  */
-DependencyManager.prototype.add_dep = function (name, id, prio, inst_deps, callbacks) {
+DependencyManager.prototype.add_dep = function (name, id, prio, dep_list, callbacks) {
     if (this.entities.hasOwnProperty(name)) {
         entity = this.entities[name];
 
         // Create a new dependency object with all information given.
-        dep = new DM_Dep(name, id, prio, inst_deps, callbacks);
+        dep = new DM_Dep(name, id, prio, dep_list, callbacks);
 
-        // For every dependency in the inst_deps list, we have to add one entry for
+        // For every dependency in the dep_list list, we have to add one entry for
         // every one of then in the in_deps array, so when changing state for
         // that entity we can find in all dependencies where it is being
         // included.
         if (entity.add_dep(id, dep)) {
-            for (var i = 0; i < dep.inst_deps.length; i++) {
-                dep_entity = this.entities[inst_deps[i].name];
+            for (var i = 0; i < dep_list.length; i++) {
+                dep_entity = this.entities[dep_list[i]];
                 if (dep_entity) {
                     if (!dep_entity.add_in_dep(dep)) {
                         return false;
@@ -101,16 +101,16 @@ DependencyManager.prototype.add_dep = function (name, id, prio, inst_deps, callb
  *
  * @method remove_dep
  * @param {string} name
- * @param {string} id
+ * @param {string} dep_id
  * @return {boolean} true if dependency was removed. false if it was not found.
  */
-DependencyManager.prototype.remove_dep = function (name, id) {
+DependencyManager.prototype.remove_dep = function (name, dep_id) {
     if (this.entities.hasOwnProperty(name)) {
         entity = this.entities[name];
-        if (entity.remove_dep(id) != null) {
+        if (entity.remove_dep(dep_id) != null) {
             for (var key in this.entities) {
                 if (this.entities.hasOwnProperty(key)) {
-                    this.entities[key].remove_in_dep(id);
+                    this.entities[key].remove_in_dep(dep_id);
                 }
             }
             return true;
